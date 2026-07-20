@@ -1,0 +1,30 @@
+name: test template
+
+on:
+    workflow_call:
+        inputs:
+            repository:
+                description: 'Repository to run tests on'
+                required: true
+                type: string
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: create github app token
+              uses: actions/create-github-app-token@v3
+              with:
+                app-id: ${{ secrets.APP_ID }}
+                private-key: ${{ secrets.PRIVATE_KEY }}
+                owner: kuba-b-labs
+                repositories: ${{ inputs.repository }}
+
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                repository: ${{ inputs.repository }}
+    
+
+    
