@@ -20,9 +20,12 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/installation/repositories
       - uses: actions/checkout@v6
+        with:
+          path: config
       - uses: actions/checkout@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
           repository: kuba-b-labs/homelab-alfa
           # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
           persist-credentials: false
+          path: config
