@@ -1,30 +1,27 @@
-name: test template
-
-on:
-    workflow_call:
-        inputs:
-            repository:
-                description: 'Repository to run tests on'
-                required: true
-                type: string
+on: 
+  workflow_call: 
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: create github app token
-              uses: actions/create-github-app-token@v3
-              id: token
-              with:
-                client-id: ${{ secrets.APP_CLIENT_ID }}
-                private-key: ${{ secrets.PRIVATE_KEY }}
-   
-            - name: Checkout
-              uses: actions/checkout@v3
-              with:
-                repository: ${{ inputs.repository }}
-                token: ${{ steps.token.outputs.token }}
-    
-
-    
+  auto-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          # required
+          app-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          owner: kuba-b-labs
+          repositories: "homelab-alfa"
+      - name: Check accessible repos
+        run: |
+          curl \
+            -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/installation/repositories
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          repository: kuba-b-labs/homelab-alfa
+          # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
+          persist-credentials: false
