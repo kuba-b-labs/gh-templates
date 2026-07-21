@@ -20,6 +20,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/installation/repositories
       - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
           repository: kuba-b-labs/homelab-alfa
